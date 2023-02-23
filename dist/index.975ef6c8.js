@@ -558,21 +558,39 @@ function hmrAccept(bundle, id) {
 
 },{}],"8lqZg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _helloWorld = require("./modules/helloWorld");
-var _helloWorldDefault = parcelHelpers.interopDefault(_helloWorld);
-(0, _helloWorldDefault.default)();
-
-},{"./modules/helloWorld":"4edRA","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4edRA":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const helloWorld = ()=>{
+var _fetchPoem = require("./lib/fetchPoem");
+var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
+var _parsePoem = require("./lib/parsePoem");
+var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
+const init = async ()=>{
+    const poemHTML = await (0, _fetchPoemDefault.default)();
+    if (!poemHTML) // do something
+    return;
+    const { title , content , url  } = (0, _parsePoemDefault.default)(poemHTML);
+    const [stanzas, images] = content;
     const h1 = document.querySelector("h1");
-    h1.innerHTML = "Hello World!";
-    console.log("Hello world!");
+    const link = document.createElement("a");
+    link.href = url;
+    link.innerHTML = title;
+    h1.appendChild(link);
+    const main = document.querySelector("main");
+    const textDiv = document.createElement("div");
+    textDiv.className = "text";
+    main.appendChild(textDiv);
+    stanzas.forEach((stanza)=>{
+        const p = document.createElement("p");
+        p.innerHTML = stanza;
+        textDiv.appendChild(p);
+    });
+    const imageDiv = document.createElement("div");
+    imageDiv.className = "images";
+    main.appendChild(imageDiv);
+    imageDiv.innerHTML = images;
 };
-exports.default = helloWorld;
+/* START */ if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", ()=>init());
+else init();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./lib/fetchPoem":"7yvg5","./lib/parsePoem":"fariZ"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -602,6 +620,44 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
+},{}],"7yvg5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
+const API_KEY = "AIzaSyAXjsB22TjNEYJy-HDC-bpMvIs9BOqxRi4";
+const BLOG_ID = "7016348522142105165";
+const POST_ID = "8040682582405624765";
+const blogPostUrl = `${API_URL}/${BLOG_ID}/posts/${POST_ID}?key=${API_KEY}`;
+const fetchPoem = ()=>new Promise((resolve, reject)=>{
+        fetch(blogPostUrl).then((res)=>{
+            if (res.ok) return res.json();
+            else throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
+        }).then((data)=>{
+            console.log(data);
+            resolve({ title , content , url  } = data);
+        }).catch((err)=>reject(err));
+    });
+exports.default = fetchPoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fariZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const parsePoem = (poemHTML)=>{
+    const { title , content , url  } = poemHTML;
+    const textAndImages = content.trim().replace(/(\r\n|\n|\r)/gm, "").split(`<br /><br /><br />`);
+    const [text, images] = textAndImages;
+    const stanzas = text.split(`<br /><br />`);
+    return {
+        title,
+        content: [
+            stanzas,
+            images
+        ],
+        url
+    };
+};
+exports.default = parsePoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
 
 //# sourceMappingURL=index.975ef6c8.js.map

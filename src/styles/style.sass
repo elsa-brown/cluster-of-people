@@ -1,9 +1,22 @@
 @use 'normalize.scss'
 @use 'system' as *
+
+a 
+  color: $c-link
+  text-decoration: none
+  &:hover, &:focus
+    color: $c-link-hover
   
 body 
-  background: $gray-1
-  color: $black
+  color: $c-text
+  font-family: $font-family
+  font-size: 13.2px
+  line-height: 1.4
 
 h1
-  margin: $s1
+  font-size: 22px
+  font-weight: normal
+  margin: 0
+
+main
+  display: flex
