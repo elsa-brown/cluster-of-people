@@ -6,19 +6,25 @@ const blogPostUrl = `${API_URL}/${BLOG_ID}/posts/${POST_ID}?key=${API_KEY}`;
 
 const fetchPoem = () =>
   new Promise((resolve, reject) => {
-    fetch(blogPostUrl)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        resolve(({ title, content, url } = data));
-      })
-      .catch((err) => reject(err));
+    const cachedPoem = localStorage.getItem("poem");
+
+    if (cachedPoem) {
+      resolve(JSON.parse(cachedPoem));
+    } else {
+      fetch(blogPostUrl)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
+          }
+        })
+        .then((data) => {
+          localStorage.setItem("poem", JSON.stringify(data));
+          resolve(data);
+        })
+        .catch((err) => reject(err));
+    }
   });
 
 export default fetchPoem;

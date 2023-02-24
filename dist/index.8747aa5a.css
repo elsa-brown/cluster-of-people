@@ -234,6 +234,10 @@ section {
   text-align: center;
 }
 
+.text {
+  min-width: 441px;
+}
+
 @keyframes fadein {
   0% {
     opacity: 0;
@@ -331,7 +335,7 @@ section {
   }
 
   .text {
-    padding-bottom: 25px;
+    padding-bottom: 10px;
   }
 }
 

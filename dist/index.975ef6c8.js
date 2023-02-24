@@ -560,10 +560,8 @@ function hmrAccept(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _lib = require("./lib");
 var _libDefault = parcelHelpers.interopDefault(_lib);
-var _makeLoop = require("./modules/makeLoop");
-var _makeLoopDefault = parcelHelpers.interopDefault(_makeLoop);
 var _mobileOrientation = require("mobile-orientation");
-const { fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
+const { errorMessage , fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
 const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
 let headerPortrait, headerLandscape;
 const showHeaderLandscape = ()=>{
@@ -576,9 +574,8 @@ const showHeaderPortrait = ()=>{
 };
 const init = async ()=>{
     const orientation = new (0, _mobileOrientation.MobileOrientation)();
+    const main = document.querySelector("main");
     const poemHTML = await fetchPoem();
-    if (!poemHTML) // do something
-    return;
     const { title , content  } = await parsePoem(poemHTML);
     const [stanzas, images] = content;
     headerPortrait = document.querySelector(".js-portrait");
@@ -595,7 +592,6 @@ const init = async ()=>{
     link.rel = "noopener noreferrer";
     link.innerHTML = title;
     h1.appendChild(link);
-    const main = document.querySelector("main");
     const textSection = document.createElement("section");
     textSection.className = "text";
     main.appendChild(textSection);
@@ -609,12 +605,47 @@ const init = async ()=>{
     main.appendChild(imageSection);
     imageSection.innerHTML = images;
     imageSection.insertAdjacentHTML("beforeend", "<br />");
-// makeLoop(imageSection);
 };
-/* START */ if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);
+if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);
 else init();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./modules/makeLoop":"8QUo2","mobile-orientation":"h2O5y","./lib":"b76vm"}],"gkKU3":[function(require,module,exports) {
+},{"./lib":"b76vm","mobile-orientation":"h2O5y","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b76vm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _fetchPoem = require("./fetchPoem");
+var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
+var _parsePoem = require("./parsePoem");
+var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
+var _getScreenOrientation = require("./getScreenOrientation");
+var _getScreenOrientationDefault = parcelHelpers.interopDefault(_getScreenOrientation);
+exports.default = {
+    fetchPoem: (0, _fetchPoemDefault.default),
+    parsePoem: (0, _parsePoemDefault.default),
+    getScreenOrientation: (0, _getScreenOrientationDefault.default)
+};
+
+},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7yvg5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
+const API_KEY = "AIzaSyAXjsB22TjNEYJy-HDC-bpMvIs9BOqxRi4";
+const BLOG_ID = "7016348522142105165";
+const POST_ID = "8040682582405624765";
+const blogPostUrl = `${API_URL}/${BLOG_ID}/posts/${POST_ID}?key=${API_KEY}`;
+const fetchPoem = ()=>new Promise((resolve, reject)=>{
+        const cachedPoem = localStorage.getItem("poem");
+        if (cachedPoem) resolve(JSON.parse(cachedPoem));
+        else fetch(blogPostUrl).then((res)=>{
+            if (res.ok) return res.json();
+            else throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
+        }).then((data)=>{
+            localStorage.setItem("poem", JSON.stringify(data));
+            resolve(data);
+        }).catch((err)=>reject(err));
+    });
+exports.default = fetchPoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -644,70 +675,34 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"8QUo2":[function(require,module,exports) {
+},{}],"fariZ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const makeLoop = (context)=>{
-    console.log(context);
-    var doc = window.document, clones = context.querySelectorAll(".is-clone"), disableScroll = false, scrollHeight = 0, scrollPos = 0, clonesHeight = 0, i = 0;
-    function getScrollPos() {
-        return (context.pageYOffset || context.scrollTop) - (context.clientTop || 0);
-    }
-    function setScrollPos(pos) {
-        context.scrollTop = pos;
-    }
-    function getClonesHeight() {
-        clonesHeight = 0;
-        for(i = 0; i < clones.length; i += 1)clonesHeight = clonesHeight + clones[i].offsetHeight;
-        return clonesHeight;
-    }
-    function reCalc() {
-        scrollPos = getScrollPos();
-        scrollHeight = context.scrollHeight;
-        clonesHeight = getClonesHeight();
-        if (scrollPos <= 0) setScrollPos(1); // Scroll 1 pixel to allow upwards scrolling
-    }
-    function scrollUpdate() {
-        if (!disableScroll) {
-            scrollPos = getScrollPos();
-            if (clonesHeight + scrollPos >= scrollHeight) {
-                // Scroll to the top when you’ve reached the bottom
-                setScrollPos(1); // Scroll down 1 pixel to allow upwards scrolling
-                disableScroll = true;
-            } else if (scrollPos <= 0) {
-                // Scroll to the bottom when you reach the top
-                setScrollPos(scrollHeight - clonesHeight);
-                disableScroll = true;
-            }
-        }
-        if (disableScroll) // Disable scroll-jumping for a short time to avoid flickering
-        window.setTimeout(function() {
-            disableScroll = false;
-        }, 40);
-    }
-    function init() {
-        reCalc();
-        context.addEventListener("scroll", function() {
-            window.requestAnimationFrame(scrollUpdate);
-        }, false);
-        window.addEventListener("resize", function() {
-            window.requestAnimationFrame(reCalc);
-        }, false);
-    }
-    if (document.readyState !== "loading") init();
-    else doc.addEventListener("DOMContentLoaded", init, false);
-// Just for this demo: Center the middle block on page load
-// window.onload = function () {
-//   setScrollPos(
-//     Math.round(
-//       clones[0].getBoundingClientRect().top +
-//         getScrollPos() -
-//         (context.offsetHeight - clones[0].offsetHeight) / 2
-//     )
-//   );
-// };
+const parsePoem = (poemHTML)=>{
+    const { title , content , url  } = poemHTML;
+    const textAndImages = content.trim().replace(/(\r\n|\n|\r)/gm, "").split(`<br /><br /><br />`);
+    const [text, images] = textAndImages;
+    const stanzas = text.split(`<br /><br />`);
+    const secureUrl = url.replace("http", "https");
+    return {
+        title,
+        content: [
+            stanzas,
+            images
+        ],
+        url: secureUrl
+    };
 };
-exports.default = makeLoop;
+exports.default = parsePoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5VOJv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const getScreenOrientation = ()=>{
+    if (screen.orientation.type.match(/portrait/)) return "portrait";
+    return "landscape";
+};
+exports.default = getScreenOrientation;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h2O5y":[function(require,module,exports) {
 !function(t, e) {
@@ -1133,70 +1128,6 @@ exports.default = makeLoop;
     ]);
 });
 
-},{}],"b76vm":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _fetchPoem = require("./fetchPoem");
-var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
-var _parsePoem = require("./parsePoem");
-var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
-var _getScreenOrientation = require("./getScreenOrientation");
-var _getScreenOrientationDefault = parcelHelpers.interopDefault(_getScreenOrientation);
-exports.default = {
-    fetchPoem: (0, _fetchPoemDefault.default),
-    parsePoem: (0, _parsePoemDefault.default),
-    getScreenOrientation: (0, _getScreenOrientationDefault.default)
-};
-
-},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7yvg5":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
-const API_KEY = "AIzaSyAXjsB22TjNEYJy-HDC-bpMvIs9BOqxRi4";
-const BLOG_ID = "7016348522142105165";
-const POST_ID = "8040682582405624765";
-const blogPostUrl = `${API_URL}/${BLOG_ID}/posts/${POST_ID}?key=${API_KEY}`;
-const fetchPoem = ()=>new Promise((resolve, reject)=>{
-        fetch(blogPostUrl).then((res)=>{
-            if (res.ok) return res.json();
-            else throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
-        }).then((data)=>{
-            console.log(data);
-            resolve({ title , content , url  } = data);
-        }).catch((err)=>reject(err));
-    });
-exports.default = fetchPoem;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fariZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const parsePoem = (poemHTML)=>{
-    const { title , content , url  } = poemHTML;
-    const textAndImages = content.trim().replace(/(\r\n|\n|\r)/gm, "").split(`<br /><br /><br />`);
-    const [text, images] = textAndImages;
-    const stanzas = text.split(`<br /><br />`);
-    const secureUrl = url.replace("http", "https");
-    return {
-        title,
-        content: [
-            stanzas,
-            images
-        ],
-        url: secureUrl
-    };
-};
-exports.default = parsePoem;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5VOJv":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const getScreenOrientation = ()=>{
-    console.log("init: ", screen.orientation.type);
-    if (screen.orientation.type.match(/portrait/)) return "portrait";
-    return "landscape";
-};
-exports.default = getScreenOrientation;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
+},{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
 
 //# sourceMappingURL=index.975ef6c8.js.map

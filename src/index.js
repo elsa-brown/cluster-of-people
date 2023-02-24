@@ -1,8 +1,7 @@
 import lib from "./lib";
-import makeLoop from "./modules/makeLoop";
 import { MobileOrientation } from "mobile-orientation";
 
-const { fetchPoem, parsePoem, getScreenOrientation } = lib;
+const { errorMessage, fetchPoem, parsePoem, getScreenOrientation } = lib;
 const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
 
 let headerPortrait, headerLandscape;
@@ -19,12 +18,9 @@ const showHeaderPortrait = () => {
 
 const init = async () => {
   const orientation = new MobileOrientation();
-  const poemHTML = await fetchPoem();
-  if (!poemHTML) {
-    // do something
-    return;
-  }
+  const main = document.querySelector("main");
 
+  const poemHTML = await fetchPoem();
   const { title, content } = await parsePoem(poemHTML);
   const [stanzas, images] = content;
 
@@ -49,8 +45,6 @@ const init = async () => {
   link.innerHTML = title;
   h1.appendChild(link);
 
-  const main = document.querySelector("main");
-
   const textSection = document.createElement("section");
   textSection.className = "text";
   main.appendChild(textSection);
@@ -66,11 +60,8 @@ const init = async () => {
   main.appendChild(imageSection);
   imageSection.innerHTML = images;
   imageSection.insertAdjacentHTML("beforeend", "<br />");
-
-  // makeLoop(imageSection);
 };
 
-/* START */
 if (document.readyState === "loading") {
   window.addEventListener("DOMContentLoaded", init);
 } else {

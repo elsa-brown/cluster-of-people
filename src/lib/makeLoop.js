@@ -1,3 +1,4 @@
+/* Not currently in use */
 const makeLoop = (context) => {
   console.log(context);
   var doc = window.document,
