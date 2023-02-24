@@ -1,5 +1,8 @@
 const getScreenOrientation = () => {
-  if (screen.orientation.type.match(/portrait/)) {
+  if (
+    screen.height > screen.width ||
+    (screen.orientation && screen.orientation.type.match(/portrait/))
+  ) {
     return "portrait";
   }
   return "landscape";

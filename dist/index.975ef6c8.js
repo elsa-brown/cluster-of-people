@@ -699,7 +699,7 @@ exports.default = parsePoem;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const getScreenOrientation = ()=>{
-    if (screen.orientation.type.match(/portrait/)) return "portrait";
+    if (screen.height > screen.width || screen.orientation && screen.orientation.type.match(/portrait/)) return "portrait";
     return "landscape";
 };
 exports.default = getScreenOrientation;

@@ -35,7 +35,7 @@ header
   padding: 10px 0
   background: $white
     
-img
+img:not(.arrow)
   background: #fff
   border: 1px solid #eeeeee
   box-shadow: 1px 1px 5px 1px rgb(0 0 0 / 10%)
@@ -58,11 +58,12 @@ section
   width: 50%
 
 .arrow
-  height: 32px
-  width: 32px
+  height: 34px
+  width: 34px
   position: absolute
   right: 0
   top: 14px
+  transform: scale(-1, 1)
   
 .images
   text-align: center
