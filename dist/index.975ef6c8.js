@@ -558,39 +558,63 @@ function hmrAccept(bundle, id) {
 
 },{}],"8lqZg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _fetchPoem = require("./lib/fetchPoem");
-var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
-var _parsePoem = require("./lib/parsePoem");
-var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
+var _lib = require("./lib");
+var _libDefault = parcelHelpers.interopDefault(_lib);
+var _makeLoop = require("./modules/makeLoop");
+var _makeLoopDefault = parcelHelpers.interopDefault(_makeLoop);
+var _mobileOrientation = require("mobile-orientation");
+const { fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
+const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
+let headerPortrait, headerLandscape;
+const showHeaderLandscape = ()=>{
+    headerPortrait.classList.add("hide");
+    headerLandscape.classList.remove("hide");
+};
+const showHeaderPortrait = ()=>{
+    headerPortrait.classList.remove("hide");
+    headerLandscape.classList.add("hide");
+};
 const init = async ()=>{
-    const poemHTML = await (0, _fetchPoemDefault.default)();
+    const orientation = new (0, _mobileOrientation.MobileOrientation)();
+    const poemHTML = await fetchPoem();
     if (!poemHTML) // do something
     return;
-    const { title , content , url  } = (0, _parsePoemDefault.default)(poemHTML);
+    const { title , content  } = await parsePoem(poemHTML);
     const [stanzas, images] = content;
-    const h1 = document.querySelector("h1");
+    headerPortrait = document.querySelector(".js-portrait");
+    headerLandscape = document.querySelector(".js-landscape");
+    const orientationInitial = getScreenOrientation();
+    if (orientationInitial === "portrait") showHeaderPortrait();
+    else showHeaderLandscape();
+    orientation.on("landscape", ()=>showHeaderLandscape());
+    orientation.on("portrait", ()=>showHeaderPortrait());
+    const h1 = headerLandscape.querySelector("h1");
     const link = document.createElement("a");
-    link.href = url;
+    link.href = githubUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
     link.innerHTML = title;
     h1.appendChild(link);
     const main = document.querySelector("main");
-    const textDiv = document.createElement("div");
-    textDiv.className = "text";
-    main.appendChild(textDiv);
+    const textSection = document.createElement("section");
+    textSection.className = "text";
+    main.appendChild(textSection);
     stanzas.forEach((stanza)=>{
         const p = document.createElement("p");
         p.innerHTML = stanza;
-        textDiv.appendChild(p);
+        textSection.appendChild(p);
     });
-    const imageDiv = document.createElement("div");
-    imageDiv.className = "images";
-    main.appendChild(imageDiv);
-    imageDiv.innerHTML = images;
+    const imageSection = document.createElement("section");
+    imageSection.className = "images";
+    main.appendChild(imageSection);
+    imageSection.innerHTML = images;
+    imageSection.insertAdjacentHTML("beforeend", "<br />");
+// makeLoop(imageSection);
 };
-/* START */ if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", ()=>init());
+/* START */ if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);
 else init();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./lib/fetchPoem":"7yvg5","./lib/parsePoem":"fariZ"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./modules/makeLoop":"8QUo2","mobile-orientation":"h2O5y","./lib":"b76vm"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -620,7 +644,511 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"7yvg5":[function(require,module,exports) {
+},{}],"8QUo2":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const makeLoop = (context)=>{
+    console.log(context);
+    var doc = window.document, clones = context.querySelectorAll(".is-clone"), disableScroll = false, scrollHeight = 0, scrollPos = 0, clonesHeight = 0, i = 0;
+    function getScrollPos() {
+        return (context.pageYOffset || context.scrollTop) - (context.clientTop || 0);
+    }
+    function setScrollPos(pos) {
+        context.scrollTop = pos;
+    }
+    function getClonesHeight() {
+        clonesHeight = 0;
+        for(i = 0; i < clones.length; i += 1)clonesHeight = clonesHeight + clones[i].offsetHeight;
+        return clonesHeight;
+    }
+    function reCalc() {
+        scrollPos = getScrollPos();
+        scrollHeight = context.scrollHeight;
+        clonesHeight = getClonesHeight();
+        if (scrollPos <= 0) setScrollPos(1); // Scroll 1 pixel to allow upwards scrolling
+    }
+    function scrollUpdate() {
+        if (!disableScroll) {
+            scrollPos = getScrollPos();
+            if (clonesHeight + scrollPos >= scrollHeight) {
+                // Scroll to the top when you’ve reached the bottom
+                setScrollPos(1); // Scroll down 1 pixel to allow upwards scrolling
+                disableScroll = true;
+            } else if (scrollPos <= 0) {
+                // Scroll to the bottom when you reach the top
+                setScrollPos(scrollHeight - clonesHeight);
+                disableScroll = true;
+            }
+        }
+        if (disableScroll) // Disable scroll-jumping for a short time to avoid flickering
+        window.setTimeout(function() {
+            disableScroll = false;
+        }, 40);
+    }
+    function init() {
+        reCalc();
+        context.addEventListener("scroll", function() {
+            window.requestAnimationFrame(scrollUpdate);
+        }, false);
+        window.addEventListener("resize", function() {
+            window.requestAnimationFrame(reCalc);
+        }, false);
+    }
+    if (document.readyState !== "loading") init();
+    else doc.addEventListener("DOMContentLoaded", init, false);
+// Just for this demo: Center the middle block on page load
+// window.onload = function () {
+//   setScrollPos(
+//     Math.round(
+//       clones[0].getBoundingClientRect().top +
+//         getScrollPos() -
+//         (context.offsetHeight - clones[0].offsetHeight) / 2
+//     )
+//   );
+// };
+};
+exports.default = makeLoop;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h2O5y":[function(require,module,exports) {
+!function(t, e) {
+    var n, i;
+    module.exports = e();
+}("undefined" != typeof self ? self : this, function() {
+    return function(t) {
+        var e = {};
+        function n(i) {
+            if (e[i]) return e[i].exports;
+            var r = e[i] = {
+                i: i,
+                l: !1,
+                exports: {}
+            };
+            return t[i].call(r.exports, r, r.exports, n), r.l = !0, r.exports;
+        }
+        return n.m = t, n.c = e, n.d = function(t, e, i) {
+            n.o(t, e) || Object.defineProperty(t, e, {
+                configurable: !1,
+                enumerable: !0,
+                get: i
+            });
+        }, n.n = function(t) {
+            var e = t && t.__esModule ? function() {
+                return t.default;
+            } : function() {
+                return t;
+            };
+            return n.d(e, "a", e), e;
+        }, n.o = function(t, e) {
+            return Object.prototype.hasOwnProperty.call(t, e);
+        }, n.p = "", n(n.s = 0);
+    }([
+        function(t, e, n) {
+            "use strict";
+            Object.defineProperty(e, "__esModule", {
+                value: !0
+            }), e.MobileOrientation = void 0;
+            var i = Object.assign || function(t) {
+                for(var e = 1; e < arguments.length; e++){
+                    var n = arguments[e];
+                    for(var i in n)Object.prototype.hasOwnProperty.call(n, i) && (t[i] = n[i]);
+                }
+                return t;
+            }, r = function() {
+                function t(t, e) {
+                    for(var n = 0; n < e.length; n++){
+                        var i = e[n];
+                        i.enumerable = i.enumerable || !1, i.configurable = !0, "value" in i && (i.writable = !0), Object.defineProperty(t, i.key, i);
+                    }
+                }
+                return function(e, n, i) {
+                    return n && t(e.prototype, n), i && t(e, i), e;
+                };
+            }();
+            n(1);
+            var o = c(n(2)), u = c(n(3)), a = c(n(4)), s = c(n(5));
+            function c(t) {
+                return t && t.__esModule ? t : {
+                    default: t
+                };
+            }
+            var f = new u.default, l = [], p = o.default.name, d = "resize", h = "portrait", v = "landscape", b = /iPad|iPhone|iPod/;
+            e.MobileOrientation = function() {
+                function t() {
+                    var e = this, n = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {};
+                    !function(t, e) {
+                        if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function");
+                    }(this, t), this._detect = function() {
+                        e.detectPortrait(), e.detectLandscape();
+                    }, this.detectPortrait = function() {
+                        (e._isPortrait || e.isDesktop) && (e.setState("portrait"), e.emit(h));
+                    }, this.detectLandscape = function() {
+                        e._isLandscape && e.isMobile && (e.setState("landscape"), e.emit(v));
+                    };
+                    this.options = i({}, {
+                        debug: !1,
+                        withTouch: !1,
+                        debounceTime: 50,
+                        portraitMediaQuery: "screen and (max-device-aspect-ratio: 1/1)",
+                        landscapeMediaQuery: "all"
+                    }, n), this.setState(null), this.debounceDetect(), window.addEventListener(d, this.detect), window.dispatchEvent(new window.CustomEvent(d));
+                }
+                return r(t, [
+                    {
+                        key: "debounceDetect",
+                        value: function() {
+                            var t = this;
+                            this.detect = (0, s.default)(function() {
+                                t._detect(), t.emit(d);
+                            }, this.options.debounceTime);
+                        }
+                    },
+                    {
+                        key: "setState",
+                        value: function(t) {
+                            this.state = t;
+                        }
+                    },
+                    {
+                        key: "log",
+                        value: function(t) {
+                            console.warn(a.default.words(p) + ": " + (0, a.default)(t) + ".");
+                        }
+                    },
+                    {
+                        key: "isTruthy",
+                        value: function() {
+                            return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : []).some(function(t) {
+                                return !0 === t;
+                            });
+                        }
+                    },
+                    {
+                        key: "isAllTruthy",
+                        value: function() {
+                            return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : []).every(function(t) {
+                                return !0 === t;
+                            });
+                        }
+                    },
+                    {
+                        key: "emit",
+                        value: function(t) {
+                            f.emit(t, this.state);
+                        }
+                    },
+                    {
+                        key: "on",
+                        value: function(t) {
+                            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : function() {};
+                            -1 !== this.events.indexOf(t) && f.subscribe(t, e);
+                        }
+                    },
+                    {
+                        key: "destroy",
+                        value: function() {
+                            window.removeEventListener(d, this.detect);
+                        }
+                    },
+                    {
+                        key: "isMobile",
+                        get: function() {
+                            var t = [], e = this.isIos, n = this.isIosFallback, i = this.isIosOrAndroid, r = this.isTouchDevice;
+                            return t.push(i, e, n), this.options.withTouch && t.push(r), this.isTruthy(t);
+                        }
+                    },
+                    {
+                        key: "isIos",
+                        get: function() {
+                            var t = [];
+                            return t.push(!!window.navigator.platform), t.push(b.test(window.navigator.platform)), this.isAllTruthy(t);
+                        }
+                    },
+                    {
+                        key: "isIosFallback",
+                        get: function() {
+                            var t = [];
+                            return t.push(!window.MSStream), t.push(b.test(window.navigator.userAgent)), this.isAllTruthy(t);
+                        }
+                    },
+                    {
+                        key: "isIosOrAndroid",
+                        get: function() {
+                            return l.length;
+                        }
+                    },
+                    {
+                        key: "isTouchDevice",
+                        get: function() {
+                            var t = [];
+                            return t.push(window.navigator.msMaxTouchPoints), t.push("onmsgesturechange" in window), t.push("ontouchstart" in document), this.isTruthy(t);
+                        }
+                    },
+                    {
+                        key: "isDesktop",
+                        get: function() {
+                            return !this.isMobile;
+                        }
+                    },
+                    {
+                        key: "isPortrait",
+                        get: function() {
+                            return "portrait" === this.state;
+                        }
+                    },
+                    {
+                        key: "isLandscape",
+                        get: function() {
+                            return "landscape" === this.state;
+                        }
+                    },
+                    {
+                        key: "_isPortrait",
+                        get: function() {
+                            var t = [];
+                            return window.matchMedia ? t.push(window.matchMedia(this.options.portraitMediaQuery).matches) : this.isDebug && this.log("incompatible browser"), this.isTruthy(t);
+                        }
+                    },
+                    {
+                        key: "_isLandscape",
+                        get: function() {
+                            var t = [];
+                            return t.push(!this._isPortrait), window.matchMedia ? t.push(window.matchMedia(this.options.landscapeMediaQuery).matches) : this.debug && this.log("incompatible browser"), this.isAllTruthy(t);
+                        }
+                    },
+                    {
+                        key: "events",
+                        get: function() {
+                            return [
+                                d,
+                                h,
+                                v
+                            ];
+                        }
+                    },
+                    {
+                        key: "debug",
+                        get: function() {
+                            return this.options.debug;
+                        }
+                    }
+                ]), t;
+            }();
+        },
+        function(t, e) {
+            try {
+                var n = new window.CustomEvent("test");
+                if (n.preventDefault(), !0 !== n.defaultPrevented) throw new Error("Could not prevent default");
+            } catch (t) {
+                var i = function(t, e) {
+                    var n, i;
+                    return e = e || {
+                        bubbles: !1,
+                        cancelable: !1,
+                        detail: void 0
+                    }, (n = document.createEvent("CustomEvent")).initCustomEvent(t, e.bubbles, e.cancelable, e.detail), i = n.preventDefault, n.preventDefault = function() {
+                        i.call(this);
+                        try {
+                            Object.defineProperty(this, "defaultPrevented", {
+                                get: function() {
+                                    return !0;
+                                }
+                            });
+                        } catch (t) {
+                            this.defaultPrevented = !0;
+                        }
+                    }, n;
+                };
+                i.prototype = window.Event.prototype, window.CustomEvent = i;
+            }
+        },
+        function(t, e) {
+            t.exports = {
+                name: "mobile-orientation",
+                version: "2.1.2",
+                description: "",
+                main: "dist",
+                scripts: {
+                    bundle: "npx webpack --config webpack.js"
+                },
+                repository: {
+                    type: "git",
+                    url: "https://github.com/adi518/mobile-orientation.git"
+                },
+                author: "",
+                license: "ISC",
+                devDependencies: {
+                    "babel-cli": "^6.26.0",
+                    "babel-core": "^6.26.0",
+                    "babel-loader": "^7.1.2",
+                    "babel-plugin-array-includes": "^2.0.3",
+                    "babel-plugin-transform-class-properties": "^6.24.1",
+                    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+                    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+                    "babel-preset-env": "^1.6.1",
+                    "babel-preset-es2015": "^6.24.1",
+                    "babel-preset-stage-2": "^6.24.1",
+                    ssri: "^5.2.4",
+                    "uglifyjs-webpack-plugin": "^1.1.6",
+                    webpack: "^3.10.0"
+                },
+                dependencies: {
+                    capitalize: "^1.0.0",
+                    "custom-event-polyfill": "^0.3.0",
+                    "es6-emitter": "^1.0.1",
+                    "lodash.debounce": "^4.0.8"
+                }
+            };
+        },
+        function(t, e, n) {
+            "use strict";
+            var i = function() {
+                function t(t, e) {
+                    for(var n = 0; n < e.length; n++){
+                        var i = e[n];
+                        i.enumerable = i.enumerable || !1, i.configurable = !0, "value" in i && (i.writable = !0), Object.defineProperty(t, i.key, i);
+                    }
+                }
+                return function(e, n, i) {
+                    return n && t(e.prototype, n), i && t(e, i), e;
+                };
+            }();
+            var r = function() {
+                function t() {
+                    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [];
+                    !function(t, e) {
+                        if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function");
+                    }(this, t), this.events = new Map(e);
+                }
+                return i(t, [
+                    {
+                        key: "subscribe",
+                        value: function(t, e) {
+                            var n = this;
+                            return this.events.set(t, [].concat(function(t) {
+                                if (Array.isArray(t)) {
+                                    for(var e = 0, n = Array(t.length); e < t.length; e++)n[e] = t[e];
+                                    return n;
+                                }
+                                return Array.from(t);
+                            }(this.events.has(t) ? this.events.get(t) : []), [
+                                e
+                            ])), function() {
+                                return n.events.set(t, n.events.get(t).filter(function(t) {
+                                    return t !== e;
+                                }));
+                            };
+                        }
+                    },
+                    {
+                        key: "emit",
+                        value: function(t) {
+                            for(var e = arguments.length, n = Array(e > 1 ? e - 1 : 0), i = 1; i < e; i++)n[i - 1] = arguments[i];
+                            return this.events.has(t) && this.events.get(t).map(function(t) {
+                                return t.apply(void 0, n);
+                            });
+                        }
+                    }
+                ]), t;
+            }();
+            t.exports = r;
+        },
+        function(t, e) {
+            t.exports = function(t) {
+                return t.charAt(0).toUpperCase() + t.substring(1);
+            }, t.exports.words = function(t) {
+                return t.replace(/(^|[^a-zA-Z\u00C0-\u017F'])([a-zA-Z\u00C0-\u017F])/g, function(t) {
+                    return t.toUpperCase();
+                });
+            };
+        },
+        function(t, e, n) {
+            (function(e) {
+                var n = "Expected a function", i = NaN, r = "[object Symbol]", o = /^\s+|\s+$/g, u = /^[-+]0x[0-9a-f]+$/i, a = /^0b[01]+$/i, s = /^0o[0-7]+$/i, c = parseInt, f = "object" == typeof e && e && e.Object === Object && e, l = "object" == typeof self && self && self.Object === Object && self, p = f || l || Function("return this")(), d = Object.prototype.toString, h = Math.max, v = Math.min, b = function() {
+                    return p.Date.now();
+                };
+                function y(t) {
+                    var e = typeof t;
+                    return !!t && ("object" == e || "function" == e);
+                }
+                function g(t) {
+                    if ("number" == typeof t) return t;
+                    if ("symbol" == typeof (e = t) || (n = e) && "object" == typeof n && d.call(e) == r) return i;
+                    var e, n;
+                    if (y(t)) {
+                        var f = "function" == typeof t.valueOf ? t.valueOf() : t;
+                        t = y(f) ? f + "" : f;
+                    }
+                    if ("string" != typeof t) return 0 === t ? t : +t;
+                    t = t.replace(o, "");
+                    var l = a.test(t);
+                    return l || s.test(t) ? c(t.slice(2), l ? 2 : 8) : u.test(t) ? i : +t;
+                }
+                t.exports = function(t, e, i) {
+                    var r, o, u, a, s, c, f = 0, l = !1, p = !1, d = !0;
+                    if ("function" != typeof t) throw new TypeError(n);
+                    function w(e) {
+                        var n = r, i = o;
+                        return r = o = void 0, f = e, a = t.apply(i, n);
+                    }
+                    function m(t) {
+                        var n = t - c;
+                        return void 0 === c || n >= e || n < 0 || p && t - f >= u;
+                    }
+                    function k() {
+                        var t, n, i = b();
+                        if (m(i)) return j(i);
+                        s = setTimeout(k, (n = e - ((t = i) - c), p ? v(n, u - (t - f)) : n));
+                    }
+                    function j(t) {
+                        return s = void 0, d && r ? w(t) : (r = o = void 0, a);
+                    }
+                    function x() {
+                        var t, n = b(), i = m(n);
+                        if (r = arguments, o = this, c = n, i) {
+                            if (void 0 === s) return f = t = c, s = setTimeout(k, e), l ? w(t) : a;
+                            if (p) return s = setTimeout(k, e), w(c);
+                        }
+                        return void 0 === s && (s = setTimeout(k, e)), a;
+                    }
+                    return e = g(e) || 0, y(i) && (l = !!i.leading, u = (p = "maxWait" in i) ? h(g(i.maxWait) || 0, e) : u, d = "trailing" in i ? !!i.trailing : d), x.cancel = function() {
+                        void 0 !== s && clearTimeout(s), f = 0, r = c = o = s = void 0;
+                    }, x.flush = function() {
+                        return void 0 === s ? a : j(b());
+                    }, x;
+                };
+            }).call(e, n(6));
+        },
+        function(t, e) {
+            var n;
+            n = function() {
+                return this;
+            }();
+            try {
+                n = n || Function("return this")() || (0, eval)("this");
+            } catch (t) {
+                "object" == typeof window && (n = window);
+            }
+            t.exports = n;
+        }
+    ]);
+});
+
+},{}],"b76vm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _fetchPoem = require("./fetchPoem");
+var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
+var _parsePoem = require("./parsePoem");
+var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
+var _getScreenOrientation = require("./getScreenOrientation");
+var _getScreenOrientationDefault = parcelHelpers.interopDefault(_getScreenOrientation);
+exports.default = {
+    fetchPoem: (0, _fetchPoemDefault.default),
+    parsePoem: (0, _parsePoemDefault.default),
+    getScreenOrientation: (0, _getScreenOrientationDefault.default)
+};
+
+},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7yvg5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
@@ -647,16 +1175,27 @@ const parsePoem = (poemHTML)=>{
     const textAndImages = content.trim().replace(/(\r\n|\n|\r)/gm, "").split(`<br /><br /><br />`);
     const [text, images] = textAndImages;
     const stanzas = text.split(`<br /><br />`);
+    const secureUrl = url.replace("http", "https");
     return {
         title,
         content: [
             stanzas,
             images
         ],
-        url
+        url: secureUrl
     };
 };
 exports.default = parsePoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5VOJv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const getScreenOrientation = ()=>{
+    console.log("init: ", screen.orientation.type);
+    if (screen.orientation.type.match(/portrait/)) return "portrait";
+    return "landscape";
+};
+exports.default = getScreenOrientation;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
 

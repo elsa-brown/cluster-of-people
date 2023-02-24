@@ -1,22 +1,58 @@
-@use 'normalize.scss'
 @use 'system' as *
+@use 'base'
+@use 'animations'
 
-a 
-  color: $c-link
-  text-decoration: none
-  &:hover, &:focus
-    color: $c-link-hover
-  
-body 
-  color: $c-text
-  font-family: $font-family
-  font-size: 13.2px
-  line-height: 1.4
+@media (orientation: portrait)
+  main
+    position: absolute
+    top: 0
+    right: 60px
+    width: calc(100vh - 90px)
+    height: 100%
+    opacity: 0.5
+    transform: rotate(90deg)
 
-h1
-  font-size: 22px
-  font-weight: normal
-  margin: 0
+  @media screen and (max-width: $xs)
+    .text
+      margin-right: 20px
 
-main
-  display: flex
+@media (orientation: landscape)
+  h1
+    font-size: 22px
+    margin-left: calc(50vw - 202px)
+    color: $c-link
+    height: 30px
+    animation: 1s ease-out slidein
+
+  header
+    position: absolute
+    width: 100%
+
+  .arrow
+    opacity: 0
+    animation: 1s ease-in-out slideout
+
+  main
+    height: 100vh
+    width: 100%
+    opacity: 1
+    animation: fadein 1.2s
+
+  section
+    padding-top: 60px
+    overflow-y: auto
+    -webkit-overflow-scrolling: touch
+    &::-webkit-scrollbar
+      background: transparent
+
+  .images
+    z-index: 1
+
+  .text
+    padding-bottom: 25px
+
+@media screen and (max-width: $tablet) 
+  a:hover 
+    color: $c-link
+
+
