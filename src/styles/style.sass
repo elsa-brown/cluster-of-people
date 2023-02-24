@@ -7,14 +7,15 @@
     position: absolute
     top: 0
     right: 60px
-    width: calc(100vh - 90px)
+    width: calc(100vh - 100px)
     height: 100%
     opacity: 0.5
     transform: rotate(90deg)
 
-  @media screen and (max-width: $xs)
+  @media screen and (max-width: $sm)
     .text
       margin-right: 20px
+      width: 40%
 
 @media (orientation: landscape)
   h1
@@ -27,6 +28,7 @@
   header
     position: absolute
     width: 100%
+    z-index: 1
 
   .arrow
     opacity: 0
@@ -50,9 +52,14 @@
 
   .text
     padding-bottom: 10px
+    min-width: 414px
 
-@media screen and (max-width: $tablet) 
-  a:hover 
-    color: $c-link
+  @media screen and (max-width: $tablet) 
+    a:hover 
+      color: $c-link
+
+  @media screen and (max-width: $xs-landscape) 
+    .images
+      margin-right: 20px
 
 

@@ -235,10 +235,6 @@ section {
   text-align: center;
 }
 
-.text {
-  min-width: 441px;
-}
-
 @keyframes fadein {
   0% {
     opacity: 0;
@@ -279,7 +275,7 @@ section {
 
 @media (orientation: portrait) {
   main {
-    width: calc(100vh - 90px);
+    width: calc(100vh - 100px);
     height: 100%;
     opacity: .5;
     position: absolute;
@@ -289,8 +285,9 @@ section {
   }
 }
 
-@media screen and (orientation: portrait) and (max-width: 375px) {
+@media screen and (orientation: portrait) and (max-width: 414px) {
   .text {
+    width: 40%;
     margin-right: 20px;
   }
 }
@@ -306,6 +303,7 @@ section {
 
   header {
     width: 100%;
+    z-index: 1;
     position: absolute;
   }
 
@@ -336,13 +334,20 @@ section {
   }
 
   .text {
+    min-width: 414px;
     padding-bottom: 10px;
   }
 }
 
-@media screen and (max-width: 820px) {
+@media screen and (orientation: landscape) and (max-width: 820px) {
   a:hover {
     color: #28b;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-width: 667px) {
+  .images {
+    margin-right: 20px;
   }
 }
 
