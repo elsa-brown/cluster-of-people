@@ -598,11 +598,14 @@ const init = async ()=>{
     const textSection = document.createElement("section");
     textSection.className = "text";
     main.appendChild(textSection);
+    const outerWrap = document.createElement("div");
+    outerWrap.className = "text-wrap-outer";
+    textSection.appendChild(outerWrap);
     const textWrap = document.createElement("div");
-    textWrap.className = "wrap";
-    textSection.appendChild(textWrap);
+    textWrap.className = "text-wrap";
+    outerWrap.appendChild(textWrap);
     const innerWrap = document.createElement("div");
-    innerWrap.className = "wrap-inner";
+    innerWrap.className = "text-wrap-inner";
     textWrap.appendChild(innerWrap);
     stanzas.forEach((stanza)=>{
         const p = document.createElement("p");

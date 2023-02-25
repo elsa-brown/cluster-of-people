@@ -18,7 +18,7 @@
     position: absolute
     top: 0
     right: 60px
-    width: calc(100vh - 60px)
+    width: 90vh
     height: 100%
     opacity: 0.5
     transform: rotate(90deg)
@@ -81,11 +81,6 @@
     &:active, &:hover
       border: inset 7px $c-border
 
-  @media screen and (max-width: $sm)
-    .text
-      margin-right: 20px
-      width: 40%
-
 /* Landscape */
 @media (orientation: landscape)
   h1
@@ -94,10 +89,11 @@
     height: 30px
     animation: 1s ease-out slidein
 
-  header
+  header.landscape
     position: absolute
     width: 100%
     z-index: 1
+    background: $white
     box-shadow: 1px 1px 5px 1px $c-shadow
     border-bottom: 1px solid $c-border
 
@@ -109,7 +105,6 @@
     animation: 1s ease-in-out slideout
 
   main
-    justify-content: space-between
     height: 100vh
     width: 100%
     opacity: 1
@@ -117,8 +112,6 @@
     padding-left: 0
 
   section
-    // width: calc(50% - 20px)
-    padding-top: 60px
     overflow-y: auto
     -webkit-overflow-scrolling: touch
     &::-webkit-scrollbar
@@ -126,38 +119,5 @@
       display: none
 
   .images
-    padding-bottom: 60px
+    padding: 60px 10px
     z-index: 1
-
-  .text
-    display: flex
-    justify-content: center
-    width: 360px
-    padding: 5px
-    margin-left: 10px
-    box-shadow: 1px 1px 5px 1px $c-border
-    
-  .wrap-inner
-    border: solid 1px $c-border
-    padding: 55px 10px 55px
-
-
-  @media screen and (max-width: $tablet) 
-    a:hover 
-      color: $c-link
-
-  @media screen and (max-width: $sm-landscape) 
-    .text
-      font-size: $f0
-      
-
-  @media screen and (max-width: $xs-landscape)
-    .images
-      padding-right: 5px
-
-    .text
-      width: 340px
-      font-size: 15px
-      margin-left: 5px
-
-

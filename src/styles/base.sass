@@ -42,7 +42,7 @@ img:not(.arrow)
   
 main
   display: flex
-  justify-content: center
+  justify-content: space-between
   max-width: 800px
   margin: 0 auto
 
@@ -91,13 +91,27 @@ section
   text-align: center
 
 .text
-  display: flex
-  justify-content: center
-  width: 360px
-  padding: 5px
   margin-left: 10px
-  box-shadow: 1px 1px 5px 1px $c-border
+  padding: 165px 10px
+
+.text-wrap
+  padding: 5px
+
+.text-wrap-inner
+  border: solid 1px $c-border
+  padding: 35px 10px 10px
+
+.text-wrap-outer
+  box-shadow: 1px 1px 5px 1px $c-shadow
+
+@media screen and (max-width: $sm-landscape) 
+  a:hover 
+      color: $c-link
+
+  body
+    font-size: $f0
+
+  @media screen and (max-width: $xs-landscape)
+    body
+      font-size: 15px
     
-  .wrap-inner
-    border: solid 1px $c-border
-    padding: 55px 10px 55px
