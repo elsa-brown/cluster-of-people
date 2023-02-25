@@ -1,5 +1,4 @@
 import lib from "./lib";
-import { MobileOrientation } from "mobile-orientation";
 
 const { errorMessage, fetchPoem, parsePoem, getScreenOrientation } = lib;
 const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
@@ -16,26 +15,30 @@ const showHeaderPortrait = () => {
   headerLandscape.classList.add("hide");
 };
 
-const init = async () => {
-  const orientation = new MobileOrientation();
-  const main = document.querySelector("main");
+const updateOrientation = () => {
+  const orientation = getScreenOrientation();
+  if (orientation === "portrait") {
+    showHeaderPortrait();
+  } else {
+    showHeaderLandscape();
+    window.scrollTo(0, 1);
+  }
+};
 
+const init = async () => {
+  /* Orientation setup */
+  headerPortrait = document.querySelector(".js-portrait");
+  headerLandscape = document.querySelector(".js-landscape");
+
+  updateOrientation();
+  window.addEventListener("resize", updateOrientation);
+
+  /* Get and show poem */
   const poemHTML = await fetchPoem();
   const { title, content } = await parsePoem(poemHTML);
   const [stanzas, images] = content;
 
-  headerPortrait = document.querySelector(".js-portrait");
-  headerLandscape = document.querySelector(".js-landscape");
-
-  const orientationInitial = getScreenOrientation();
-  if (orientationInitial === "portrait") {
-    showHeaderPortrait();
-  } else {
-    showHeaderLandscape();
-  }
-
-  orientation.on("landscape", () => showHeaderLandscape());
-  orientation.on("portrait", () => showHeaderPortrait());
+  const main = document.querySelector("main");
 
   const h1 = headerLandscape.querySelector("h1");
   const link = document.createElement("a");
