@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -7,12 +7,52 @@
       content="width=device-width, initial-scale=1, minimum-scale=1"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>start project</title>
+    <title>Cluster Of People Lying Down Group Shot</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png" />
     <link rel="stylesheet" href="styles/style.sass" />
   </head>
   <body>
-    <h1>hello</h1>
+    <header class="portrait">
+      <h1>Rotate to Play</h1>
+      <img class="arrow" src="./assets/arrow.svg"></img>
+    </header>
+    <header class="landscape hide">
+      <h1></h1>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        aria-label="curve down arrow"
+        class="arrow"
+        transform="scale(-1 1)"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke="#0d0d0d"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M18 5h-4a4 4 0 0 0-4 4v10m0 0-4-4m4 4 4-4"
+        />
+      </svg>
+    </header>
+    <main></main>
+    <section class="about shrink">
+      <div class="about-content">
+        <div>
+          <div class="circular">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+              <path d="M10,50 a40,40 0 1,1 0,1z" id="circle" fill="none"></path>
+              <text>
+                <textPath xlink:href="#circle">Cluster Of People Lying Down Group Shot</textPath>
+              </text>
+            </svg>
+          </div>
+          <p>Rotate your device to play in Landscape mode.</p>
+      </div>
+        <a href="https://github.com/elsa-brown/cluster-of-people" target="_blank" rel="noopener noreferrer">view source code</a>
+      </div>
+      <button class="about-button"><div>+</div></button>
+    </section>
     <script src="index.js" type="module"></script>
   </body>
 </html>

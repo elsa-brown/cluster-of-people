@@ -1,26 +1,5 @@
-# start-project
+# Cluster Of People Lying Down Group Shot
 
-Boilerplate starter code for Node.js UI projects.
+Interpolation of a poem originally published on [blogspot.com](https://beatpoet2015.blogspot.com/2016/01/cluster-of-people-lying-down-group-shot.html).
 
-## Includes
-- parcel
-- ES6 modules
-- sass
-- normalize
-- prettier
-
-## Design System
-A very basic design system is defined in `src/styles/_system.sass`
-
-## Getting Started
-1. [Create a new repository](https://github.com/new) that is empty
-
-2. On CLI:
-```
-git clone git@github.com:elsa-brown/start-project.git <new-repo-name>
-cd <new-repo-name>
-git remote set-url origin <new-repo-URL>
-
-npm install
-npm start
-```
+Designed for mobile.

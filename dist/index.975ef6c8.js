@@ -558,19 +558,111 @@ function hmrAccept(bundle, id) {
 
 },{}],"8lqZg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _helloWorld = require("./modules/helloWorld");
-var _helloWorldDefault = parcelHelpers.interopDefault(_helloWorld);
-(0, _helloWorldDefault.default)();
+var _lib = require("./lib");
+var _libDefault = parcelHelpers.interopDefault(_lib);
+const { errorMessage , fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
+const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
+let headerPortrait, headerLandscape;
+const showHeaderLandscape = ()=>{
+    headerPortrait.classList.add("hide");
+    headerLandscape.classList.remove("hide");
+};
+const showHeaderPortrait = ()=>{
+    headerPortrait.classList.remove("hide");
+    headerLandscape.classList.add("hide");
+};
+const updateOrientation = ()=>{
+    const orientation = getScreenOrientation();
+    if (orientation === "portrait") showHeaderPortrait();
+    else {
+        showHeaderLandscape();
+        window.scrollTo(0, 1);
+    }
+};
+const init = async ()=>{
+    /* Orientation setup */ headerPortrait = document.querySelector(".portrait");
+    headerLandscape = document.querySelector(".landscape");
+    updateOrientation();
+    window.addEventListener("resize", updateOrientation);
+    /* Get and show poem */ const poemHTML = await fetchPoem();
+    const { title , content  } = await parsePoem(poemHTML);
+    const [stanzas, images] = content;
+    const main = document.querySelector("main");
+    const h1 = headerLandscape.querySelector("h1");
+    const link = document.createElement("a");
+    link.href = githubUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = title;
+    h1.appendChild(link);
+    const textSection = document.createElement("section");
+    textSection.className = "text";
+    main.appendChild(textSection);
+    const outerWrap = document.createElement("div");
+    outerWrap.className = "text-wrap-outer";
+    textSection.appendChild(outerWrap);
+    const textWrap = document.createElement("div");
+    textWrap.className = "text-wrap";
+    outerWrap.appendChild(textWrap);
+    const innerWrap = document.createElement("div");
+    innerWrap.className = "text-wrap-inner";
+    textWrap.appendChild(innerWrap);
+    stanzas.forEach((stanza)=>{
+        const p = document.createElement("p");
+        p.innerHTML = stanza;
+        innerWrap.appendChild(p);
+    });
+    const imageSection = document.createElement("section");
+    imageSection.className = "images";
+    main.appendChild(imageSection);
+    imageSection.innerHTML = images;
+    imageSection.insertAdjacentHTML("beforeend", "<br />");
+    const aboutSection = document.querySelector(".about");
+    const aboutButton = document.querySelector(".about-button");
+    aboutButton.addEventListener("click", ()=>{
+        aboutSection.classList.toggle("grow");
+        aboutSection.classList.toggle("shrink");
+        headerPortrait.classList.toggle("set-opacity");
+    });
+};
+if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);
+else init();
 
-},{"./modules/helloWorld":"4edRA","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4edRA":[function(require,module,exports) {
+},{"./lib":"b76vm","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b76vm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const helloWorld = ()=>{
-    const h1 = document.querySelector("h1");
-    h1.innerHTML = "Hello World!";
-    console.log("Hello world!");
+var _fetchPoem = require("./fetchPoem");
+var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
+var _parsePoem = require("./parsePoem");
+var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
+var _getScreenOrientation = require("./getScreenOrientation");
+var _getScreenOrientationDefault = parcelHelpers.interopDefault(_getScreenOrientation);
+exports.default = {
+    fetchPoem: (0, _fetchPoemDefault.default),
+    parsePoem: (0, _parsePoemDefault.default),
+    getScreenOrientation: (0, _getScreenOrientationDefault.default)
 };
-exports.default = helloWorld;
+
+},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7yvg5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
+const API_KEY = "AIzaSyAXjsB22TjNEYJy-HDC-bpMvIs9BOqxRi4";
+const BLOG_ID = "7016348522142105165";
+const POST_ID = "8040682582405624765";
+const blogPostUrl = `${API_URL}/${BLOG_ID}/posts/${POST_ID}?key=${API_KEY}`;
+const fetchPoem = ()=>new Promise((resolve, reject)=>{
+        const cachedPoem = localStorage.getItem("poem");
+        if (cachedPoem) resolve(JSON.parse(cachedPoem));
+        else fetch(blogPostUrl).then((res)=>{
+            if (res.ok) return res.json();
+            else throw new Error(`BLOGGER API ${res.status} ${res.statusText}`);
+        }).then((data)=>{
+            localStorage.setItem("poem", JSON.stringify(data));
+            resolve(data);
+        }).catch((err)=>reject(err));
+    });
+exports.default = fetchPoem;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -602,6 +694,35 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
+},{}],"fariZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const parsePoem = (poemHTML)=>{
+    const { title , content , url  } = poemHTML;
+    const textAndImages = content.trim().replace(/(\r\n|\n|\r)/gm, "").split(`<br /><br /><br />`);
+    const [text, images] = textAndImages;
+    const stanzas = text.split(`<br /><br />`);
+    const secureUrl = url.replace("http", "https");
+    return {
+        title,
+        content: [
+            stanzas,
+            images
+        ],
+        url: secureUrl
+    };
+};
+exports.default = parsePoem;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5VOJv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const getScreenOrientation = ()=>{
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    return isPortrait ? "portrait" : "landscape";
+};
+exports.default = getScreenOrientation;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
 
 //# sourceMappingURL=index.975ef6c8.js.map

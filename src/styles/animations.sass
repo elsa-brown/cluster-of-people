@@ -1,0 +1,86 @@
+@use 'system' as *
+
+@keyframes fadeintext
+  0%
+    opacity: 0
+
+  50%
+    opacity: 0
+      
+  100%
+    opacity: 1
+
+@keyframes fadein
+  0%
+    opacity: 0
+    
+  100%
+    opacity: 1
+
+@keyframes fadeout
+  0%
+    opacity: 1
+    
+  100%
+    opacity: 0
+
+@keyframes fadeouthalf
+  0%
+    opacity: 1
+  100%
+    opacity: 0.5
+
+@keyframes grow
+  0%
+    height: 0
+    width: 0
+    padding: 0
+    
+  100%
+    height: 100%
+    width: 100%
+    padding: 20px
+
+@keyframes shrink
+  0%
+    height: 100%
+    width: 100%
+    padding: 20px
+    
+  100%
+    height: 0
+    width: 0
+    padding: 0
+
+@keyframes slidein
+  from
+    margin-left: -202px
+    color: $black
+
+  to
+    color: $c-link
+    margin-left: calc(50vw - 202px)
+
+@keyframes slideout
+  from
+    opacity: 1
+    top: 14px
+
+  80%
+    opacity: 0
+
+  to
+    opacity: 0
+    top: 900%
+
+@keyframes rotate
+  from 
+    opacity: 0
+    transform: rotate(-70deg)
+
+  50%
+    opacity: 1
+
+  to 
+    transform: rotate(20deg)
+
