@@ -52,14 +52,18 @@
 
   .text
     padding-bottom: 10px
-    min-width: 414px
+    min-width: 400px
 
   @media screen and (max-width: $tablet) 
     a:hover 
       color: $c-link
 
-  @media screen and (max-width: $xs-landscape) 
+  @media screen and (max-width: $sm-landscape) 
+    .text
+      font-size: 16px
+
+  @media screen and (max-width: $xs-landscape)
     .images
-      margin-right: 20px
+      padding-right: 10px
 
 
