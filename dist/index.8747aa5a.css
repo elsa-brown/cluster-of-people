@@ -566,4 +566,14 @@ section {
   }
 }
 
+@media screen and (orientation: landscape) and (max-width: 667px) {
+  main {
+    justify-content: center;
+  }
+
+  section {
+    width: 45%;
+  }
+}
+
 /*# sourceMappingURL=index.8747aa5a.css.map */
