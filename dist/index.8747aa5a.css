@@ -366,7 +366,12 @@ section {
 
 @keyframes rotate {
   from {
+    opacity: 0;
     transform: rotate(-70deg);
+  }
+
+  50% {
+    opacity: 1;
   }
 
   to {
@@ -418,6 +423,7 @@ section {
   }
 
   .about.shrink .about-content .circular svg {
+    opacity: 0;
     transform: rotate(-70deg);
   }
 
@@ -439,6 +445,7 @@ section {
   }
 
   .about.grow .about-content .circular svg {
+    opacity: 1;
     animation: 4s rotate;
     transform: rotate(20deg);
   }
