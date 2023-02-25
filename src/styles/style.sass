@@ -37,6 +37,11 @@
       .about-content
         height: 0
         width: 0
+        padding: 0
+        p, a
+          opacity: 0
+        .circular svg
+          transform: rotate(-70deg)
     &.grow
       height: 100%
       width: 100%
@@ -45,6 +50,12 @@
       .about-content
         height: calc(100% - 40px)
         width: calc(100% - 40px)
+        p, a
+          opacity: 1
+          animation: 2s ease fadeintext
+        .circular svg
+          transform: rotate(20deg)
+          animation: 4s ease rotate
       button > div
         transform: rotate(45deg)
 

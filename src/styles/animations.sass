@@ -1,5 +1,15 @@
 @use 'system' as *
 
+@keyframes fadeintext
+  0%
+    opacity: 0
+
+  50%
+    opacity: 0
+      
+  100%
+    opacity: 1
+
 @keyframes fadein
   0%
     opacity: 0
@@ -56,3 +66,10 @@
   to
     opacity: 0
     top: 900%
+
+@keyframes rotate
+  from 
+    transform: rotate(-70deg)
+  to 
+    transform: rotate(20deg)
+

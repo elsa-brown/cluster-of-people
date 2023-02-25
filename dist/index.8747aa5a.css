@@ -218,6 +218,24 @@ section {
   width: 50%;
 }
 
+.about-content {
+  color: #0d0d0d;
+  letter-spacing: .0125rem;
+  text-align: center;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 60px 60px 22px;
+  font-size: 1rem;
+  display: flex;
+}
+
+.about-content a {
+  color: #28b;
+  text-align: left;
+  font-family: monospace;
+  transform: translateX(-40px);
+}
+
 .arrow {
   height: 34px;
   width: 34px;
@@ -225,6 +243,17 @@ section {
   top: 14px;
   right: 0;
   transform: scale(-1, 1);
+}
+
+.circular {
+  margin-bottom: 60px;
+  font-size: 12px;
+}
+
+.circular svg {
+  display: block;
+  overflow: visible;
+  transform: rotate(-70deg);
 }
 
 .images {
@@ -243,6 +272,20 @@ section {
 .text .wrap-inner {
   border: 1px solid #eee;
   padding: 55px 10px;
+}
+
+@keyframes fadeintext {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
@@ -321,6 +364,16 @@ section {
   }
 }
 
+@keyframes rotate {
+  from {
+    transform: rotate(-70deg);
+  }
+
+  to {
+    transform: rotate(20deg);
+  }
+}
+
 @media (orientation: portrait) {
   header.portrait h1 {
     text-align: right;
@@ -354,15 +407,18 @@ section {
     right: 20px;
   }
 
-  .about.shrink {
+  .about.shrink, .about.shrink .about-content {
     height: 0;
     width: 0;
     padding: 0;
   }
 
-  .about.shrink .about-content {
-    height: 0;
-    width: 0;
+  .about.shrink .about-content p, .about.shrink .about-content a {
+    opacity: 0;
+  }
+
+  .about.shrink .about-content .circular svg {
+    transform: rotate(-70deg);
   }
 
   .about.grow {
@@ -375,6 +431,16 @@ section {
   .about.grow .about-content {
     height: calc(100% - 40px);
     width: calc(100% - 40px);
+  }
+
+  .about.grow .about-content p, .about.grow .about-content a {
+    opacity: 1;
+    animation: 2s fadeintext;
+  }
+
+  .about.grow .about-content .circular svg {
+    animation: 4s rotate;
+    transform: rotate(20deg);
   }
 
   .about.grow button > div {

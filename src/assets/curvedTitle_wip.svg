@@ -7,3 +7,9 @@
     </textPath>
   </text>
 </svg>
+
+<!-- svg text trial -->
+<svg width="100%">
+  <text y="1rem" x="50%">Rotate your device to play in</text>
+  <text y="2.5rem" x="50%">Landscape mode.</text>
+</svg>
