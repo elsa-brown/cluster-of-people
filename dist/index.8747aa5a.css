@@ -221,6 +221,10 @@ section {
   z-index: 2;
 }
 
+.about-button {
+  padding: 0;
+}
+
 .about-content {
   color: #0d0d0d;
   letter-spacing: .0125rem;
@@ -265,7 +269,7 @@ section {
 
 .text {
   margin-left: 10px;
-  padding: 165px 10px;
+  padding: 135px 10px;
 }
 
 .text-wrap {
@@ -569,10 +573,6 @@ section {
 @media screen and (orientation: landscape) and (max-width: 667px) {
   main {
     justify-content: center;
-  }
-
-  section {
-    width: 45%;
   }
 }
 
