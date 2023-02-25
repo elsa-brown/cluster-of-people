@@ -7,27 +7,38 @@
   100%
     opacity: 1
 
+@keyframes fadeout
+  0%
+    opacity: 1
+    
+  100%
+    opacity: 0
+
 @keyframes grow
   0%
     height: 0
     width: 0
+    padding: 0
     
   100%
     height: 100%
     width: 100%
+    padding: 20px
 
 @keyframes shrink
   0%
     height: 100%
     width: 100%
+    padding: 20px
     
   100%
     height: 0
     width: 0
+    padding: 0
 
 @keyframes slidein
   from
-    margin-left: 10px
+    margin-left: -202px
     color: $black
 
   to

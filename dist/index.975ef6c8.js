@@ -580,8 +580,8 @@ const updateOrientation = ()=>{
     }
 };
 const init = async ()=>{
-    /* Orientation setup */ headerPortrait = document.querySelector(".js-portrait");
-    headerLandscape = document.querySelector(".js-landscape");
+    /* Orientation setup */ headerPortrait = document.querySelector(".portrait");
+    headerLandscape = document.querySelector(".landscape");
     updateOrientation();
     window.addEventListener("resize", updateOrientation);
     /* Get and show poem */ const poemHTML = await fetchPoem();
@@ -617,7 +617,6 @@ const init = async ()=>{
     const aboutSection = document.querySelector(".about");
     const aboutButton = document.querySelector(".about-button");
     aboutButton.addEventListener("click", ()=>{
-        aboutButton.classList.toggle("collapsed");
         aboutSection.classList.toggle("grow");
         aboutSection.classList.toggle("shrink");
     });

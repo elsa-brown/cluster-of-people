@@ -27,8 +27,8 @@ const updateOrientation = () => {
 
 const init = async () => {
   /* Orientation setup */
-  headerPortrait = document.querySelector(".js-portrait");
-  headerLandscape = document.querySelector(".js-landscape");
+  headerPortrait = document.querySelector(".portrait");
+  headerLandscape = document.querySelector(".landscape");
 
   updateOrientation();
   window.addEventListener("resize", updateOrientation);
@@ -75,7 +75,6 @@ const init = async () => {
   const aboutSection = document.querySelector(".about");
   const aboutButton = document.querySelector(".about-button");
   aboutButton.addEventListener("click", () => {
-    aboutButton.classList.toggle("collapsed");
     aboutSection.classList.toggle("grow");
     aboutSection.classList.toggle("shrink");
   });

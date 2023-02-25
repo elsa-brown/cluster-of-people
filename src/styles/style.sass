@@ -2,32 +2,20 @@
 @use 'base'
 @use 'animations'
 
+/* Portrait */
 @media (orientation: portrait)
+  header.portrait
+    h1
+      text-align: right
+      padding: 0 40px
   main
     position: absolute
     top: 0
     right: 60px
-    width: calc(100vh - 100px)
+    width: calc(100vh - 60px)
     height: 100%
     opacity: 0.5
     transform: rotate(90deg)
-
-  .about-button
-    height: 48px
-    width: 48px
-    background: white
-    border: none
-    color: red
-    font-size: 2rem
-    position: absolute
-    bottom: 0
-    right: 0
-    div
-      transform: rotate(45deg)
-    &.collapsed
-      div
-        transform: rotate(0)
-      
 
   .about
     height: 0
@@ -35,24 +23,53 @@
     position: absolute
     bottom: 0
     right: 0
-    background: red
+    background: $c-shadow
+    .about-content
+      background: $white
+      border: solid 1px $black
+      position: absolute
+      bottom: 20px
+      right: 20px
     &.shrink
       height: 0
       width: 0
-      animation: 1s shrink
+      padding: 0
+      .about-content
+        height: 0
+        width: 0
     &.grow
       height: 100%
       width: 100%
+      padding: 20px
       animation: 1s grow
+      .about-content
+        height: calc(100% - 40px)
+        width: calc(100% - 40px)
+      button > div
+        transform: rotate(45deg)
+
+  .about-button
+    height: 64px
+    width: 64px
+    background: white
+    border: outset 7px $c-border
+    color: $c-link
+    font-size: 2rem
+    position: absolute
+    bottom: 20px
+    right: 20px
+    cursor: pointer
+    &:active, &:hover
+      border: inset 7px $c-border
 
   @media screen and (max-width: $sm)
     .text
       margin-right: 20px
       width: 40%
 
+/* Landscape */
 @media (orientation: landscape)
   h1
-    font-size: 22px
     margin-left: calc(50vw - 202px)
     color: $c-link
     height: 30px
@@ -90,7 +107,7 @@
       display: none
 
   .images
-    padding-bottom: 120px
+    padding-bottom: 60px
     z-index: 1
 
   .text
