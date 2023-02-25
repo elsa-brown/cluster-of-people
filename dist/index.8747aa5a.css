@@ -189,7 +189,6 @@ h1 {
 }
 
 header {
-  background: #fff;
   padding: 10px 0;
 }
 
@@ -216,6 +215,10 @@ p {
 section {
   height: 100%;
   width: 50%;
+}
+
+.about {
+  z-index: 2;
 }
 
 .about-content {
@@ -308,6 +311,16 @@ section {
   }
 }
 
+@keyframes fadeouthalf {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: .5;
+  }
+}
+
 @keyframes grow {
   0% {
     height: 0;
@@ -380,6 +393,17 @@ section {
 }
 
 @media (orientation: portrait) {
+  header.portrait {
+    z-index: 1;
+    opacity: 1;
+    position: relative;
+  }
+
+  header.portrait.set-opacity {
+    opacity: .5;
+    animation: 4s fadeouthalf;
+  }
+
   header.portrait h1 {
     text-align: right;
     padding: 0 40px;

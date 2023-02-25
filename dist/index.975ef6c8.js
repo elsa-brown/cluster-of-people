@@ -619,6 +619,7 @@ const init = async ()=>{
     aboutButton.addEventListener("click", ()=>{
         aboutSection.classList.toggle("grow");
         aboutSection.classList.toggle("shrink");
+        headerPortrait.classList.toggle("set-opacity");
     });
 };
 if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);

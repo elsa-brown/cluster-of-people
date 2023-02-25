@@ -5,6 +5,12 @@
 /* Portrait */
 @media (orientation: portrait)
   header.portrait
+    position: relative
+    z-index: 1
+    opacity: 1
+    &.set-opacity
+      opacity: 0.5
+      animation: 4s fadeouthalf
     h1
       text-align: right
       padding: 0 40px
