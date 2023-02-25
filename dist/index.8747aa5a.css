@@ -245,6 +245,30 @@ section {
   }
 }
 
+@keyframes grow {
+  0% {
+    height: 0;
+    width: 0;
+  }
+
+  100% {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@keyframes shrink {
+  0% {
+    height: 100%;
+    width: 100%;
+  }
+
+  100% {
+    height: 0;
+    width: 0;
+  }
+}
+
 @keyframes slidein {
   from {
     color: #0d0d0d;
@@ -283,6 +307,47 @@ section {
     right: 60px;
     transform: rotate(90deg);
   }
+
+  .about-button {
+    height: 48px;
+    width: 48px;
+    color: red;
+    background: #fff;
+    border: none;
+    font-size: 2rem;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .about-button div {
+    transform: rotate(45deg);
+  }
+
+  .about-button.collapsed div {
+    transform: rotate(0);
+  }
+
+  .about {
+    height: 0;
+    width: 0;
+    background: red;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .about.shrink {
+    height: 0;
+    width: 0;
+    animation: 1s shrink;
+  }
+
+  .about.grow {
+    height: 100%;
+    width: 100%;
+    animation: 1s grow;
+  }
 }
 
 @media screen and (orientation: portrait) and (max-width: 414px) {
@@ -304,7 +369,13 @@ section {
   header {
     width: 100%;
     z-index: 1;
+    border-bottom: 1px solid #eee;
     position: absolute;
+    box-shadow: 1px 1px 5px 1px #0000001a;
+  }
+
+  .about-button {
+    display: none;
   }
 
   .arrow {
@@ -316,6 +387,8 @@ section {
     height: 100vh;
     width: 100%;
     opacity: 1;
+    justify-content: space-between;
+    padding-left: 0;
     animation: 1.2s fadein;
   }
 
@@ -327,15 +400,26 @@ section {
 
   section::-webkit-scrollbar {
     background: none;
+    display: none;
   }
 
   .images {
     z-index: 1;
+    padding-bottom: 120px;
   }
 
   .text {
-    min-width: 400px;
-    padding-bottom: 10px;
+    width: 360px;
+    justify-content: center;
+    margin-left: 10px;
+    padding: 5px;
+    display: flex;
+    box-shadow: 1px 1px 5px 1px #eee;
+  }
+
+  .wrap-inner {
+    border: 1px solid #eee;
+    padding: 55px 10px;
   }
 }
 
@@ -347,13 +431,19 @@ section {
 
 @media screen and (orientation: landscape) and (max-width: 896px) {
   .text {
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 
 @media screen and (orientation: landscape) and (max-width: 667px) {
   .images {
-    padding-right: 10px;
+    padding-right: 5px;
+  }
+
+  .text {
+    width: 340px;
+    margin-left: 5px;
+    font-size: 15px;
   }
 }
 

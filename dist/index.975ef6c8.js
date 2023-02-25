@@ -598,16 +598,29 @@ const init = async ()=>{
     const textSection = document.createElement("section");
     textSection.className = "text";
     main.appendChild(textSection);
+    const textWrap = document.createElement("div");
+    textWrap.className = "wrap";
+    textSection.appendChild(textWrap);
+    const innerWrap = document.createElement("div");
+    innerWrap.className = "wrap-inner";
+    textWrap.appendChild(innerWrap);
     stanzas.forEach((stanza)=>{
         const p = document.createElement("p");
         p.innerHTML = stanza;
-        textSection.appendChild(p);
+        innerWrap.appendChild(p);
     });
     const imageSection = document.createElement("section");
     imageSection.className = "images";
     main.appendChild(imageSection);
     imageSection.innerHTML = images;
     imageSection.insertAdjacentHTML("beforeend", "<br />");
+    const aboutSection = document.querySelector(".about");
+    const aboutButton = document.querySelector(".about-button");
+    aboutButton.addEventListener("click", ()=>{
+        aboutButton.classList.toggle("collapsed");
+        aboutSection.classList.toggle("grow");
+        aboutSection.classList.toggle("shrink");
+    });
 };
 if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", init);
 else init();
