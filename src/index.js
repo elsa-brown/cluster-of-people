@@ -1,6 +1,6 @@
 import lib from "./lib";
 
-const { errorMessage, fetchPoem, parsePoem, getScreenOrientation } = lib;
+const { isMobile, fetchPoem, parsePoem, getScreenOrientation } = lib;
 const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
 
 let headerPortrait, headerLandscape;
@@ -16,6 +16,7 @@ const showHeaderPortrait = () => {
 };
 
 const updateOrientation = () => {
+  console.log("UPDATING");
   const orientation = getScreenOrientation();
   if (orientation === "portrait") {
     showHeaderPortrait();
@@ -26,12 +27,15 @@ const updateOrientation = () => {
 };
 
 const init = async () => {
+  console.log(isMobile());
   /* Orientation setup */
   headerPortrait = document.querySelector(".portrait");
   headerLandscape = document.querySelector(".landscape");
 
+  // if (isMobile()) {
   updateOrientation();
   window.addEventListener("resize", updateOrientation);
+  // }
 
   /* Get and show poem */
   const poemHTML = await fetchPoem();

@@ -560,7 +560,7 @@ function hmrAccept(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _lib = require("./lib");
 var _libDefault = parcelHelpers.interopDefault(_lib);
-const { errorMessage , fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
+const { isMobile , fetchPoem , parsePoem , getScreenOrientation  } = (0, _libDefault.default);
 const githubUrl = "https://github.com/elsa-brown/cluster-of-people";
 let headerPortrait, headerLandscape;
 const showHeaderLandscape = ()=>{
@@ -572,6 +572,7 @@ const showHeaderPortrait = ()=>{
     headerLandscape.classList.add("hide");
 };
 const updateOrientation = ()=>{
+    console.log("UPDATING");
     const orientation = getScreenOrientation();
     if (orientation === "portrait") showHeaderPortrait();
     else {
@@ -580,10 +581,13 @@ const updateOrientation = ()=>{
     }
 };
 const init = async ()=>{
+    console.log(isMobile());
     /* Orientation setup */ headerPortrait = document.querySelector(".portrait");
     headerLandscape = document.querySelector(".landscape");
+    // if (isMobile()) {
     updateOrientation();
     window.addEventListener("resize", updateOrientation);
+    // }
     /* Get and show poem */ const poemHTML = await fetchPoem();
     const { title , content  } = await parsePoem(poemHTML);
     const [stanzas, images] = content;
@@ -631,6 +635,8 @@ else init();
 },{"./lib":"b76vm","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b76vm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _isMobile = require("./isMobile");
+var _isMobileDefault = parcelHelpers.interopDefault(_isMobile);
 var _fetchPoem = require("./fetchPoem");
 var _fetchPoemDefault = parcelHelpers.interopDefault(_fetchPoem);
 var _parsePoem = require("./parsePoem");
@@ -638,12 +644,13 @@ var _parsePoemDefault = parcelHelpers.interopDefault(_parsePoem);
 var _getScreenOrientation = require("./getScreenOrientation");
 var _getScreenOrientationDefault = parcelHelpers.interopDefault(_getScreenOrientation);
 exports.default = {
+    isMobile: (0, _isMobileDefault.default),
     fetchPoem: (0, _fetchPoemDefault.default),
     parsePoem: (0, _parsePoemDefault.default),
     getScreenOrientation: (0, _getScreenOrientationDefault.default)
 };
 
-},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7yvg5":[function(require,module,exports) {
+},{"./fetchPoem":"7yvg5","./parsePoem":"fariZ","./getScreenOrientation":"5VOJv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./isMobile":"eKno8"}],"7yvg5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const API_URL = "https://www.googleapis.com/blogger/v3/blogs";
@@ -722,6 +729,15 @@ const getScreenOrientation = ()=>{
     return isPortrait ? "portrait" : "landscape";
 };
 exports.default = getScreenOrientation;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eKno8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const isMobile = ()=>{
+    const mobileMatch = navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i);
+    return mobileMatch ? true : false;
+};
+exports.default = isMobile;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequiredaca")
 
